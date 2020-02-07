@@ -21,6 +21,7 @@ class YoloTracker(object):
 		self._proc_mss = []
 		self._yolo = yolo
 		self._frame_size = (1920, 1120)
+		self._fourcc = cv2.VideoWriter_fourcc('m','p','4','v')
 
 		self.class_names = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
 							'bus', 'car', 'cat', 'chair', 'cow', 'diningtable',
@@ -143,12 +144,16 @@ class YoloTracker(object):
 				a = np.array((tbbox["left"], tbbox["top"], tbbox["right"], tbbox["bottom"]), dtype=np.float32)
 				b = np.array((dbbox["left"], dbbox["top"], dbbox["right"], dbbox["bottom"]), dtype=np.float32)
 				iou = self.iou(a, b)
+				print(a, b, "  iou = ", iou)
 				matched.append(
 					{"iou": iou, "dresult": dresult}
 				)
 
 		matched.sort(key=lambda x: x["iou"], reverse=True)
-		return matched[0]["dresult"] if matched == [] else None
+		if matched == []:
+			return None
+		else:
+			return matched[0]["dresult"]
 
 	def refine_bbox(self, tracked_result, assigned_result):
 		# 一度シンプルに平均をとる．
@@ -156,14 +161,14 @@ class YoloTracker(object):
 		abbox = assigned_result["bbox"]
 
 		new_bbox = {
-			"left": (tbbox["left"] + abbox["left"]) / 2,
-			"top": (tbbox["top"] + abbox["top"]) / 2,
-			"right": (tbbox["right"] + abbox["right"]) / 2,
-			"bottom": (tbbox["bottom"] + abbox["bottom"]) / 2
+			"left": int((tbbox["left"] + abbox["left"]) / 2),
+			"top": int((tbbox["top"] + abbox["top"]) / 2),
+			"right": int((tbbox["right"] + abbox["right"]) / 2),
+			"bottom": int((tbbox["bottom"] + abbox["bottom"]) / 2)
 		}
 
 		refined_result = {
-			"label": tbbox["label"],
+			"label": tracked_result["label"],
 			"bbox": new_bbox
 		}
 
@@ -176,6 +181,8 @@ class YoloTracker(object):
 		im_h = video.get(cv2.CAP_PROP_FRAME_HEIGHT)
 		fps = video.get(cv2.CAP_PROP_FPS)
 		frame_num = video.get(cv2.CAP_PROP_FRAME_COUNT)
+
+		video_result = cv2.VideoWriter("sample_data/yolo_tracker_result.mp4", self._fourcc, fps, self._frame_size)
 
 		int_ms = 1000 // int(fps)
 
@@ -190,6 +197,10 @@ class YoloTracker(object):
 			final_bboxes = []
 
 			ret, frame = video.read()
+
+			if not ret: # end of the frame
+				break
+
 			fimage = Image.fromarray(frame)
 			fimage_resized = fimage.resize(self._frame_size)
 			detect_results = self._yolo.infer_bounding_box(fimage_resized)
@@ -215,12 +226,13 @@ class YoloTracker(object):
 
 					# to (x,y,width,height)
 					old_bbox = (old_left, old_top, old_width, old_height)
-					print("initialize grid...", old_bbox)
-					self.tracker.init(old_frame, old_bbox)
+					#print("initialize grid...", old_bbox)
+					tracker = self._get_tracker_instance(self._method)
+					tracker.init(old_frame, old_bbox)
 
 					# conduct tracking
-					track, raw_result = self.tracker.update(frame)
-					print("update result... ", raw_result)
+					track, raw_result = tracker.update(frame)
+					#print("update result... ", raw_result)
 					tracked_result = {
 						"label": old_label,
 						"bbox": {
@@ -238,6 +250,8 @@ class YoloTracker(object):
 							refined_result = self.refine_bbox(tracked_result, assigned_result)
 							detect_results.append(refined_result)
 
+					del tracker
+
 				detector_bboxes_old = detect_results
 				old_frame = frame
 
@@ -245,7 +259,7 @@ class YoloTracker(object):
 				label = result["label"]
 				bbox = result["bbox"]
 				top, left, bottom, right = bbox["top"], bbox["left"], bbox["bottom"], bbox["right"]
-				print(label, (left, top), (right, bottom))
+				#print("refined result:  ", label, (left, top), (right, bottom))
 
 				class_num = 0
 				for i in self.class_names:
@@ -253,7 +267,8 @@ class YoloTracker(object):
 						class_num = self.class_names.index(i)
 						break
 
-				# 枠の作成
+				# make bbox
+				#print(self.class_colors[class_num])
 				cv2.rectangle(frame, (left, top), (right, bottom), self.class_colors[class_num], 2)
 
 				# ラベルの作成
@@ -262,16 +277,20 @@ class YoloTracker(object):
 				cv2.putText(frame, text, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1)
 
 			# cv2.imshow("Show FLAME Image", frame)
+			video_result.write(frame)
 
-			# # escを押したら終了。
-			# k = cv2.waitKey(10);
-			# if k == ord('q'):  break;
+			# # # escを押したら終了。
+			# k = cv2.waitKey(10)
+			# if k == ord('q'):  break
+
+		# finally video has to be released
+		video_result.release()
 
 
 if  __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(
-		prog='yolo-tracker.py',
+		prog='yolo_tracker.py',
 		description='Object Detector YOLO + Tracking',
 		add_help=True,
 	)
