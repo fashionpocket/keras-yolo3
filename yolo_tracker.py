@@ -20,8 +20,8 @@ class YoloTracker(object):
 		self._ret_bboxes = []
 		self._proc_mss = []
 		self._yolo = yolo
-		self._frame_size = (1920, 1120)
-		self._fourcc = cv2.VideoWriter_fourcc('m','p','4','v')
+		self._frame_size = (1920, 1080)
+		self._fourcc = cv2.VideoWriter_fourcc(*"MJPG")
 
 		self.class_names = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
 							'bus', 'car', 'cat', 'chair', 'cow', 'diningtable',
@@ -144,7 +144,7 @@ class YoloTracker(object):
 				a = np.array((tbbox["left"], tbbox["top"], tbbox["right"], tbbox["bottom"]), dtype=np.float32)
 				b = np.array((dbbox["left"], dbbox["top"], dbbox["right"], dbbox["bottom"]), dtype=np.float32)
 				iou = self.iou(a, b)
-				print(a, b, "  iou = ", iou)
+				#print(a, b, "  iou = ", iou)
 				matched.append(
 					{"iou": iou, "dresult": dresult}
 				)
@@ -192,6 +192,7 @@ class YoloTracker(object):
 		old_frame = None
 		detector_bboxes_old = []
 
+		k = 0
 		while video.isOpened():
 
 			final_bboxes = []
@@ -209,51 +210,51 @@ class YoloTracker(object):
 				old_frame = frame
 				detector_bboxes_old = detect_results
 				initial_case = False
+				continue
 
-			else:
-				# foreach detected instance
-				for old_object in detector_bboxes_old:
-					old_label = old_object["label"]
-					old_bbox_dict = old_object["bbox"]
+			# foreach detected instance
+			for old_object in detector_bboxes_old:
+				old_label = old_object["label"]
+				old_bbox_dict = old_object["bbox"]
 
-					old_top = old_bbox_dict["top"]
-					old_bottom = old_bbox_dict["bottom"]
-					old_left = old_bbox_dict["left"]
-					old_right = old_bbox_dict["right"]
+				old_top = old_bbox_dict["top"]
+				old_bottom = old_bbox_dict["bottom"]
+				old_left = old_bbox_dict["left"]
+				old_right = old_bbox_dict["right"]
 
-					old_width = old_right - old_left
-					old_height = old_bottom - old_top
+				old_width = old_right - old_left
+				old_height = old_bottom - old_top
 
-					# to (x,y,width,height)
-					old_bbox = (old_left, old_top, old_width, old_height)
-					#print("initialize grid...", old_bbox)
-					tracker = self._get_tracker_instance(self._method)
-					tracker.init(old_frame, old_bbox)
+				# to (x,y,width,height)
+				old_bbox = (old_left, old_top, old_width, old_height)
+				#print("initialize grid...", old_bbox)
+				tracker = self._get_tracker_instance(self._method)
+				tracker.init(old_frame, old_bbox)
 
-					# conduct tracking
-					track, raw_result = tracker.update(frame)
-					#print("update result... ", raw_result)
-					tracked_result = {
-						"label": old_label,
-						"bbox": {
-							"left": raw_result[0],
-							"top": raw_result[1],
-							"right": raw_result[0] + raw_result[2],
-							"bottom": raw_result[1] + raw_result[3]
-						}
+				# conduct tracking
+				track, raw_result = tracker.update(frame)
+				#print("update result... ", raw_result)
+				tracked_result = {
+					"label": old_label,
+					"bbox": {
+						"left": raw_result[0],
+						"top": raw_result[1],
+						"right": raw_result[0] + raw_result[2],
+						"bottom": raw_result[1] + raw_result[3]
 					}
+				}
 
-					if track: # tracking successfully
-						assigned_result = self.assignment_bbox(tracked_result, detect_results)
-						if assigned_result in detect_results:
-							detect_results.remove(assigned_result)
-							refined_result = self.refine_bbox(tracked_result, assigned_result)
-							detect_results.append(refined_result)
+				if track: # tracking successfully
+					assigned_result = self.assignment_bbox(tracked_result, detect_results)
+					if assigned_result in detect_results:
+						detect_results.remove(assigned_result)
+						refined_result = self.refine_bbox(tracked_result, assigned_result)
+						detect_results.append(refined_result)
 
-					del tracker
+				del tracker
 
-				detector_bboxes_old = detect_results
-				old_frame = frame
+			detector_bboxes_old = detect_results
+			old_frame = frame
 
 			for i, result in enumerate(detect_results):
 				label = result["label"]
@@ -277,7 +278,11 @@ class YoloTracker(object):
 				cv2.putText(frame, text, (left, top), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1)
 
 			# cv2.imshow("Show FLAME Image", frame)
+			print(frame.shape)
+			cv2.imwrite("./results/sample/%05d.png" % k, frame)
 			video_result.write(frame)
+
+			k += 1
 
 			# # # escを押したら終了。
 			# k = cv2.waitKey(10)
