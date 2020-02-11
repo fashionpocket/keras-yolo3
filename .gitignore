@@ -106,3 +106,17 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# .idea
+.idea
+
+# .keras
+.keras
+
+# dockerfile
+docker
+
+# misc (e.g. data)
+output
+sample_data
+.bash_history
