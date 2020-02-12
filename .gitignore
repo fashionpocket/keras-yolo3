@@ -119,4 +119,6 @@ docker
 # misc (e.g. data)
 output
 sample_data
+kitti_detect_video.py
+kitti_detect.py
 .bash_history
