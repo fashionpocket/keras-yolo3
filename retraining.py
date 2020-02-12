@@ -192,7 +192,7 @@ if __name__ == '__main__':
     classes_path = args.classes_path
     anchors_path = args.anchors_path
     height, width = args.input_size.split("x")
-    input_shape = (height, width)
+    input_shape = (int(height), int(width))
     weights_path = args.pretrained_weights
 
     if not os.path.exists(log_dir):
