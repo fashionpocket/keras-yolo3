@@ -116,8 +116,9 @@ ENV/
 # dockerfile
 docker
 
-# train txt
+# annotation data
 *train.txt
+annotation/*.txt
 
 # misc (e.g. data)
 output
