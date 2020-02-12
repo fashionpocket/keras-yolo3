@@ -154,13 +154,14 @@ class YOLO(object):
 
             results.append(
                 {"label": predicted_class,
-                "score": score,
-                "bbox": {
+                 "class_id": c,
+                 "score": score,
+                 "bbox": {
                     "left": left,
                     "top": top,
                     "right": right,
                     "bottom": bottom
-                }
+                 }
                 }
             )
 
