@@ -116,6 +116,9 @@ ENV/
 # dockerfile
 docker
 
+# train txt
+*train.txt
+
 # misc (e.g. data)
 output
 sample_data
