@@ -75,7 +75,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     label_path = args.label_path
     image_dirpath = args.image_dirpath
-    out_path = args.outpath
+    out_path = args.out_path
 
     if not os.path.exists(label_path):
         raise Exception(label_path + ' does not exist.')
