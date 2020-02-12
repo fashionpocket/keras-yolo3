@@ -3,7 +3,6 @@ import os
 from collections import defaultdict
 from PIL import Image
 
-from yolo import YOLO
 from utils.io_utils import read_txt_gt4kitti
 
 """
@@ -31,7 +30,7 @@ label_numbering = {
 }
 
 
-def make_gt_annotation(image_dirpath, label_dirpath):
+def make_gt_annotation(image_dirpath, label_dirpath, out_path):
     """
     This method makes ground truth annotation txt.
     :param image_dirpath: path to image dir (end with /image_dd), string
@@ -53,7 +52,7 @@ def make_gt_annotation(image_dirpath, label_dirpath):
                 bbox = label_bbox[1]  # [left, top, height, bottom] in float
                 name_box_id[image_path].append([bbox, class_id])
 
-    f = open('kitti_gt_train.txt', 'w')
+    f = open(out_path, 'w')
     for key in name_box_id.keys():
         f.write(key)
         box_infos = name_box_id[key]
@@ -70,11 +69,12 @@ def make_gt_annotation(image_dirpath, label_dirpath):
     f.close()
 
 
-def make_inference_annotation(image_dirpath):
+def make_inference_annotation(image_dirpath, out_path):
     """
     This method makes inferenced annotation txt by pre-trained yolov3.
     :param image_dirpath: path to image dir (end with /image_dd), string
     """
+    from yolo import YOLO
     name_box_id = defaultdict(list)
     image_seqs = sorted(os.listdir(image_dirpath))
     yolo = YOLO()
@@ -92,7 +92,7 @@ def make_inference_annotation(image_dirpath):
                 bbox = [ano["bbox"]["left"], ano["bbox"]["top"], ano["bbox"]["right"], ano["bbox"]["bottom"]]
                 name_box_id[image_path].append([bbox, class_id])
 
-    f = open('kitti_inference_train.txt', 'w')
+    f = open(out_path, 'w')
     for key in name_box_id.keys():
         f.write(key)
         box_infos = name_box_id[key]
@@ -118,6 +118,7 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--mode', type=str, default='inference', choices=['inference', 'gt'])
     parser.add_argument('-i', '--image_dirpath', type=str, required=True)
     parser.add_argument('-l', '--label_dirpath', type=str, default=None, required=False)
+    parser.add_argument('-o', '--out_path', type=str, default='annotation/train.txt', required=True)
     parser.add_argument('-s', '--image_size', type=str, default='1584x480', required=False)
 
     args = parser.parse_args()
@@ -125,6 +126,7 @@ if __name__ == '__main__':
     mode = args.mode
     image_dirpath = args.image_dirpath
     label_dirpath = args.label_dirpath
+    out_path = args.out_path
     rows, cols = args.image_size.split("x")
 
 
@@ -135,11 +137,12 @@ if __name__ == '__main__':
 
     # print('- KITTI IMAGE DIR : ' + image_dirpath)
     # print('- KITTI LABEL DIR : ' + label_dirpath)
+    print('- ANNOTATION OUTPUT FILEPATH : ' + out_path)
     print('- ANNOTATION MODE : ' + mode)
 
     if mode == 'gt':
-        make_gt_annotation(image_dirpath, label_dirpath)
+        make_gt_annotation(image_dirpath, label_dirpath, out_path)
     else:
-        make_inference_annotation(image_dirpath)
+        make_inference_annotation(image_dirpath, out_path)
 
     print("Making annotation file correctly")

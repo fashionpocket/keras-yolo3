@@ -4,7 +4,7 @@ import json
 from collections import defaultdict
 
 
-def make_gt_annotation(label_path):
+def make_gt_annotation(label_path, image_dirpath, out_path):
     """
     This method makes annotation txt on MS COCO dataset.
     label_path ... e.g. "mscoco2017/annotations/instances_train2017.json"
@@ -20,7 +20,7 @@ def make_gt_annotation(label_path):
     annotations = data['annotations']
     for ant in annotations:
         id = ant['image_id']
-        name = 'mscoco2017/train2017/%012d.jpg' % id
+        name = os.path.join(image_dirpath, '%012d.jpg' % id)
         cat = ant['category_id']
 
         if cat >= 1 and cat <= 11:
@@ -44,7 +44,7 @@ def make_gt_annotation(label_path):
 
         name_box_id[name].append([ant['bbox'], cat])
 
-    f = open('train.txt', 'w')
+    f = open(out_path, 'w')
     for key in name_box_id.keys():
         f.write(key)
         box_infos = name_box_id[key]
@@ -69,13 +69,21 @@ if __name__ == '__main__':
         add_help=True,
     )
     parser.add_argument('-l', '--label_path', type=str, required=True)
+    parser.add_argument('-i', '--image_dirpath', type=str, required=True)
+    parser.add_argument('-o', '--out_path', type=str, required=True)
 
     args = parser.parse_args()
     label_path = args.label_path
+    image_dirpath = args.image_dirpath
+    out_path = args.outpath
 
     if not os.path.exists(label_path):
         raise Exception(label_path + ' does not exist.')
+    if not os.path.exists(image_dirpath):
+        raise Exception(image_dirpath + ' does not exist.')
 
-    print('- MSCOCO2017 LABEL DIR : ' + label_path)
-    make_gt_annotation(label_path)
+    print('- MSCOCO2017 LABEL  FILEPATH : ' + label_path)
+    print('- MSCOCO2017 IMAGE  DIREPATH : ' + image_dirpath)
+    print('- ANNOTATION OUTPUT FILEPATH : ' + out_path)
+    make_gt_annotation(label_path, image_dirpath, out_path)
     print("Making annotation file correctly")
