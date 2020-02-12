@@ -144,7 +144,6 @@ class Trainer(object):
             # use custom yolo_loss Lambda layer.
             'yolo_loss': lambda y_true, y_pred: y_pred})
 
-        print('Train on {} samples, val on {} samples, with batch size {}.'.format(num_train, num_valid, batch_size))
         train_data_generator = data_generator_wrapper(train_lines,
                                                            batch_size,
                                                            self.input_shape,
@@ -156,6 +155,10 @@ class Trainer(object):
                                                            self.anchors,
                                                            self.num_classes)
 
+        first_valid_result = model.evaluate_generator(valid_data_generator, max(1, num_valid // batch_size))
+        print("Epoch 0 (at the pretrained stage) [validation loss : %.4f]" % first_valid_result[0])
+
+        print('Train on {} samples, val on {} samples, with batch size {}.'.format(num_train, num_valid, batch_size))
         model.fit_generator(train_data_generator,
                             steps_per_epoch=max(1, num_train // batch_size),
                             validation_data=valid_data_generator,
