@@ -182,7 +182,7 @@ if __name__ == '__main__':
     parser.add_argument('--classes_path', type=str, default='model_data/coco_classes.txt')
     parser.add_argument('--anchors_path', type=str, default='model_data/yolo_anchors.txt')
     parser.add_argument('-s', '--input_size', type=str, default='416x416', help='HEIGHT x WIDTH')
-    parser.add_argument('--pretraind_weights', type=str, default='model_data/yolo_weights.h5', help='path to pretrained yolov3 weights')
+    parser.add_argument('--pretrained_weights', type=str, default='model_data/yolo_weights.h5', help='path to pretrained yolov3 weights')
 
     args = parser.parse_args()
     train_annotation_path = args.train_path
@@ -201,9 +201,9 @@ if __name__ == '__main__':
     trainer = Trainer(
         train_annotation_path=train_annotation_path,
         valid_annotation_path=valid_annotation_path,
-        log_dir='logs/000/',
-        classes_path='model_data/coco_classes.txt',
-        anchors_path='model_data/yolo_anchors.txt',
+        log_dir=log_dir,
+        classes_path=classes_path,
+        anchors_path=anchors_path,
         input_shape=input_shape
     )
 
