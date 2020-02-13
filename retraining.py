@@ -286,7 +286,7 @@ class Trainer(object):
 
                 elapsed_time = datetime.datetime.now() - start_time
                 print("[Epoch %d] [Batch %d/%d] [YOLO loss: %f] time: %s"
-                      % (epoch, batch_i, steps_per_epoch, train_loss, elapsed_time))
+                      % (epoch, batch_i+1, steps_per_epoch, train_loss, elapsed_time))
 
             valid_loss = self.model.evaluate_generator(self.valid_data_generator, max(1, num_valid // batch_size))
             print("[Epoch %d] [validation loss: %f]" % (epoch, valid_loss))
@@ -390,8 +390,6 @@ class Trainer(object):
         evaluator = COCOEvalWrapper(groundtruth, detections)
         summary_metrics_valid, per_cat_ap_valid = evaluator.ComputeMetrics()
 
-        print(summary_metrics_valid)
-
         # # print evaluated metrics to std_out
         # print("Evaluation on TRAIN DATA -----")
         # for metric_name, metric_value in summary_metrics_train:
@@ -406,13 +404,13 @@ class Trainer(object):
         self.training_log_file.flush()
 
         # save evaluated metrics to csv file by epoch
-        summary_filename = out_path_base + "_summary-ep%3d.csv" % epoch
-        summary_path = os.path.join(self.log_dir, summary_filename)
+        # summary_filename = out_path_base + "_summary-ep%3d.csv" % epoch
+        # summary_path = os.path.join(self.log_dir, summary_filename)
 
         # per_cat_filename = out_path_base + "_per_category-ep%3d.csv" % epoch
         # per_cat_path = os.path.join(self.log_dir, per_cat_filename)
 
-        write_csv(summary_path, summary_metrics_valid)
+        # write_csv(summary_path, summary_metrics_valid)
         # write_csv(per_cat_path, per_cat_ap_valid)
 
         # plot training process
