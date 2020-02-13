@@ -519,6 +519,8 @@ class Trainer(object):
                 del draw
 
             imgs = [np.array(image_gt, dtype='float32'), np.array(image_dt, dtype='float32')]
+            # Rescale images 0 - 1
+            imgs /= 255.
 
             titles = ["Ground Truth", "Detected by YOLOv3"]
 
