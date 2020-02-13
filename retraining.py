@@ -291,11 +291,12 @@ class Trainer(object):
             valid_loss = self.model.evaluate_generator(self.valid_data_generator, max(1, num_valid // batch_size))
             print("[Epoch %d] [validation loss: %f]" % (epoch, valid_loss))
             self.evaluate(epoch)
+            self.sample_detection(epoch)
 
             if not os.path.exists("{}/models".format(self.output_dir)):
                 os.makedirs("{}/models".format(self.output_dir), exist_ok=True)
 
-            self.model.save_weights("{}/models/ep%3d-val_loss%.3f.weights".format(self.output_dir, epoch, valid_loss))
+            self.model.save_weights(os.path.join(self.output_dir, "/models/ep%03d-val_loss%.4f.weights" % (epoch, valid_loss)))
 
     def train_automatically(self, freeze_body=2, weights_path='model_data/yolo_weights.h5', batch_size=32):
 
@@ -526,7 +527,7 @@ class Trainer(object):
                 axs[0, 0].imshow(imgs[i])
                 axs[0, 0].set_title(titles[i])
                 axs[0, 0].axis('off')
-            fig.savefig("%s/images/sample_ep%3d-%d" % (self.output_dir, epoch, idx))
+            fig.savefig(os.path.join(self.output_dir, "images/sample_ep%3d-%d.png" % (epoch, idx)))
             plt.close()
 
 
