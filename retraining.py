@@ -406,14 +406,14 @@ class Trainer(object):
         self.training_log_file.flush()
 
         # save evaluated metrics to csv file by epoch
-        summary_filename = out_path_base + "_summary-ep%3d" % epoch
+        summary_filename = out_path_base + "_summary-ep%3d.csv" % epoch
         summary_path = os.path.join(self.log_dir, summary_filename)
 
-        per_cat_filename = out_path_base + "_per_category-ep%3d" % epoch
-        per_cat_path = os.path.join(self.log_dir, per_cat_filename)
+        # per_cat_filename = out_path_base + "_per_category-ep%3d.csv" % epoch
+        # per_cat_path = os.path.join(self.log_dir, per_cat_filename)
 
         write_csv(summary_path, summary_metrics_valid)
-        write_csv(per_cat_path, per_cat_ap_valid)
+        # write_csv(per_cat_path, per_cat_ap_valid)
 
         # plot training process
         names = ["epoch"] \
