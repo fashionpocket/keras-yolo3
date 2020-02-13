@@ -295,7 +295,6 @@ class Trainer(object):
             if not os.path.exists("{}/models".format(self.output_dir)):
                 os.makedirs("{}/models".format(self.output_dir), exist_ok=True)
 
-            self.model.save("{}/models/ep%3d-val_loss%.3f.h5".format(self.output_dir, epoch, valid_loss))
             self.model.save_weights("{}/models/ep%3d-val_loss%.3f.weights".format(self.output_dir, epoch, valid_loss))
 
     def train_automatically(self, freeze_body=2, weights_path='model_data/yolo_weights.h5', batch_size=32):
