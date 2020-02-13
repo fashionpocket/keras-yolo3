@@ -274,19 +274,22 @@ class Trainer(object):
 
         first_valid_result = self.model.evaluate_generator(self.valid_data_generator, max(1, num_valid // batch_size))
         print("[Epoch 0] (at the pretrained stage) [validation loss : %.4f]" % first_valid_result)
+        self.evaluate(0)
+        self.sample_detection(0)
 
         start_time = datetime.datetime.now()
         steps_per_epoch = max(1, num_train // batch_size)
         for epoch in range(epochs):
+            epoch += 1
             for batch_i in range(steps_per_epoch):
-
+                batch_i += 1
                 # train manually
                 X, y = next(self.train_data_generator)
                 train_loss = self.model.train_on_batch(X, y)
 
                 elapsed_time = datetime.datetime.now() - start_time
                 print("[Epoch %d] [Batch %d/%d] [YOLO loss: %f] time: %s"
-                      % (epoch, batch_i+1, steps_per_epoch, train_loss, elapsed_time))
+                      % (epoch, batch_i, steps_per_epoch, train_loss, elapsed_time))
 
             valid_loss = self.model.evaluate_generator(self.valid_data_generator, max(1, num_valid // batch_size))
             print("[Epoch %d] [validation loss: %f]" % (epoch, valid_loss))
