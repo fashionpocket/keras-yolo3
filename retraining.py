@@ -384,13 +384,15 @@ class Trainer(object):
         evaluator = COCOEvalWrapper(groundtruth, detections)
         summary_metrics_valid, per_cat_ap_valid = evaluator.ComputeMetrics()
 
-        # print evaluated metrics to std_out
-        print("Evaluation on TRAIN DATA -----")
-        for metric_name, metric_value in summary_metrics_train:
-            print(metric_name + " : " + metric_value)
-        print("Evaluation on VALIDATION DATA -----")
-        for metric_name, metric_value in summary_metrics_valid:
-            print(metric_name + " : " + metric_value)
+        print(summary_metrics_valid)
+
+        # # print evaluated metrics to std_out
+        # print("Evaluation on TRAIN DATA -----")
+        # for metric_name, metric_value in summary_metrics_train:
+        #     print(metric_name + " : " + metric_value)
+        # print("Evaluation on VALIDATION DATA -----")
+        # for metric_name, metric_value in summary_metrics_valid:
+        #     print(metric_name + " : " + metric_value)
 
         # save evaluated metrics to single csv file
         outlines = [epoch] + list(summary_metrics_train.values()) + list(summary_metrics_valid.values())
