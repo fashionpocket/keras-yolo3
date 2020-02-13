@@ -1,6 +1,6 @@
-import os
-import csv
 import copy
+import csv
+
 persons_class = ["1"]
 
 kitti_classes = ['Car', 'Van', 'Truck', 'Pedestrian', 'Person_sitting', 'Cyclist', 'Tram']
@@ -9,6 +9,7 @@ kitti_classes = ['Car', 'Van', 'Truck', 'Pedestrian', 'Person_sitting', 'Cyclist
 Created by kyomin on 
 Modified by anno on 2020/02/12
 """
+
 
 def xywh2xyxy(bbox):
     """
@@ -23,6 +24,8 @@ def xywh2xyxy(bbox):
     bbox[3] = float(bbox[3]) + bbox[1]
 
     return bbox
+
+
 def reorder_frameID(frame_dict):
     """
     reorder the frames dictionary in a ascending manner
@@ -35,6 +38,7 @@ def reorder_frameID(frame_dict):
     for key in keys_int:
         new_dict[str(key)] = frame_dict[str(key)]
     return new_dict
+
 
 def read_txt_gt4V(textpath):
     # TODO: this method will be no longer used
@@ -51,14 +55,16 @@ def read_txt_gt4V(textpath):
             if len(line) == 1:
                 line = line[0].split(' ')
             # we only consider "pedestrian" class #
-            if len(line) < 7 or (line[7] not in persons_class and "MOT2015" not in textpath) or int(float(line[6]))==0:
+            if len(line) < 7 or (line[7] not in persons_class and "MOT2015" not in textpath) or int(
+                    float(line[6])) == 0:
                 continue
             if not (line[0]) in frames:
                 frames[line[0]] = []
             bbox = xywh2xyxy(line[2:6])
-            frames[line[0]].append([line[1]]+bbox)
+            frames[line[0]].append([line[1]] + bbox)
     ordered = reorder_frameID(frames)
     return ordered
+
 
 def read_txt_gt4mot17det(textpath):
     """
@@ -73,14 +79,15 @@ def read_txt_gt4mot17det(textpath):
         for line in f_csv:
             if len(line) == 1:
                 line = line[0].split(' ')
-            if len(line) < 7 or ("MOT2015" not in textpath) or int(float(line[6]))==0:
+            if len(line) < 7 or ("MOT2015" not in textpath) or int(float(line[6])) == 0:
                 continue
             if not (line[0]) in frames:
                 frames[line[0]] = []
             bbox = xywh2xyxy(line[2:6])
-            frames[line[0]].append([line[1]]+bbox)
+            frames[line[0]].append([line[1]] + bbox)
     ordered = reorder_frameID(frames)
     return ordered
+
 
 def read_txt_gt4kitti(textpath):
     """
@@ -136,5 +143,12 @@ def read_txt_gt4kitti(textpath):
     return ordered
 
 
-
-
+def write_csv(fid, metrics):
+    """Writes metrics key-value pairs to CSV file.
+    Args:
+      fid: File identifier of an opened file.
+      metrics: A dictionary with metrics to be written.
+    """
+    metrics_writer = csv.writer(fid, delimiter=',')
+    for metric_name, metric_value in metrics.items():
+        metrics_writer.writerow([metric_name, str(metric_value)])
