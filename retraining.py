@@ -139,6 +139,9 @@ class Trainer(object):
         self.model_body = yolo_body(image_input, num_anchors // 3, self.num_classes)
         print('Create YOLOv3 model with {} anchors and {} classes.'.format(num_anchors, self.num_classes))
 
+        if self.gpu_num>=2:
+            self.model_body = multi_gpu_model(self.model_body, gpus=self.gpu_num)
+
         # Generate YOLOv3 core model for learning
         if load_pretrained:
             self.model_body.load_weights(weights_path, by_name=True, skip_mismatch=True)
@@ -157,9 +160,8 @@ class Trainer(object):
 
         # Generate output tensor targets for filtered bounding boxes
         self.input_image_shape = K.placeholder(shape=(2,))
-        if self.gpu_num>=2:
-            model = multi_gpu_model(model, gpus=self.gpu_num)
-        boxes, scores, classes = yolo_eval(model.output, self.anchors,
+
+        boxes, scores, classes = yolo_eval(self.model_body.output, self.anchors,
                 len(self.class_names), self.input_image_shape,
                 score_threshold=self.score, iou_threshold=self.iou)
 
@@ -572,7 +574,7 @@ if __name__ == '__main__':
         input_shape=input_shape
     )
 
-    trainer.train_automatically(
+    trainer.train(
         weights_path=weights_path,
         batch_size=batch_size
     )
