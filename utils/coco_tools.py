@@ -473,6 +473,7 @@ def ExportSingleImageDetectionBoxesToCoco(image_id,
     if len(detection_classes.shape) != 1 or len(detection_scores.shape) != 1:
         raise ValueError('All entries in detection_classes and detection_scores'
                          'expected to be of rank 1.')
+    print(detection_boxes.shape)
     if len(detection_boxes.shape) != 2:
         raise ValueError('All entries in detection_boxes expected to be of '
                          'rank 2.')
