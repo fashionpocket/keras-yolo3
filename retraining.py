@@ -361,8 +361,7 @@ class Trainer(object):
     def evaluate(self, epoch, out_path_base="evaluation"):
         # for train data
         image_ids_gt, groundtruth_boxes_list, groundtruth_classes_list = self.make_groundtruth_list(self.train_lines)
-        image_ids_dt, detection_boxes_list, detection_scores_list, detection_classes_list = self.make_detection_list(
-            self.valid_lines)
+        image_ids_dt, detection_boxes_list, detection_scores_list, detection_classes_list = self.make_detection_list(self.train_lines)
 
         groundtruth_list = ExportGroundtruthToCOCO(
             image_ids_gt, groundtruth_boxes_list, groundtruth_classes_list, self.categories_dict
