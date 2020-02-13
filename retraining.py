@@ -196,9 +196,12 @@ class Trainer(object):
             image_ids.append(image_id)
             detection_scores.append(np.array(out_scores))
             detection_classes.append(np.array(out_classes))
-            detection_boxes.append(
-                np.array([np.array([left, top, right, bottom]) for top, left, bottom, right in out_boxes])
-            )
+            if len(out_boxes) == 0:
+                detection_boxes.append(np.zeros((0, 4)))
+            else:
+                detection_boxes.append(
+                    np.array([np.array([left, top, right, bottom]) for top, left, bottom, right in out_boxes])
+                )
             del image
 
         return image_ids, detection_boxes, detection_scores, detection_classes
@@ -213,8 +216,11 @@ class Trainer(object):
             image_id = line[0]
             line_boxes_ids = [l.split(",") for l in line[1:]]
             # print(line[1:])
-            boxes = np.array([np.array([float(xmin), float(ymin), float(xmax), float(ymax)])
-                              for xmin, ymin, xmax, ymax, _ in line_boxes_ids])
+            if len(line_boxes_ids) == 0:
+                boxes = np.zeros((0, 4))
+            else:
+                boxes = np.array([np.array([float(xmin), float(ymin), float(xmax), float(ymax)])
+                                  for xmin, ymin, xmax, ymax, _ in line_boxes_ids])
             classes = np.array([int(class_id) for _, _, _, _, class_id in line_boxes_ids])
             image_ids.append(image_id)
             detection_boxes.append(boxes)
@@ -280,7 +286,7 @@ class Trainer(object):
 
                 elapsed_time = datetime.datetime.now() - start_time
                 print("[Epoch %d] [Batch %d/%d] [YOLO loss: %f] time: %s"
-                      % (epoch, batch_i, batch_size, train_loss, elapsed_time))
+                      % (epoch, batch_i, steps_per_epoch, train_loss, elapsed_time))
 
             valid_loss = self.model.evaluate_generator(self.valid_data_generator, max(1, num_valid // batch_size))
             print("[Epoch %d] [validation loss: %f]" % (epoch, valid_loss))
