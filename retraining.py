@@ -524,9 +524,9 @@ class Trainer(object):
 
             fig, axs = plt.subplots(1, 2)
             for i in range(2):
-                axs[0, 0].imshow(imgs[i])
-                axs[0, 0].set_title(titles[i])
-                axs[0, 0].axis('off')
+                axs[0, i].imshow(imgs[i])
+                axs[0, i].set_title(titles[i])
+                axs[0, i].axis('off')
             fig.savefig(os.path.join(self.output_dir, "images/sample_ep%3d-%d.png" % (epoch, idx)))
             plt.close()
 
