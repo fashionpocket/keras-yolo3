@@ -527,7 +527,7 @@ class Trainer(object):
                 axs[i].imshow(imgs[i])
                 axs[i].set_title(titles[i])
                 axs[i].axis('off')
-            fig.savefig(os.path.join(self.output_dir, "images/sample_ep%3d-%d.png" % (epoch, idx)))
+            fig.savefig(os.path.join(self.output_dir, "images/sample_ep%04d-%d.png" % (epoch, idx)))
             plt.close()
 
 
