@@ -206,14 +206,6 @@ class Trainer(object):
                      for top, left, bottom, right in out_boxes]
                 )
             )
-            print(np.array(
-                    [np.array(
-                        [max(0, np.floor(left + 0.5).astype('int32')),
-                         max(0, np.floor(top + 0.5).astype('int32')),
-                         min(image.size[0], np.floor(right + 0.5).astype('int32')),
-                         min(image.size[1], np.floor(bottom + 0.5).astype('int32'))])
-                     for top, left, bottom, right in out_boxes]
-                ))
             del image
 
         return image_ids, detection_boxes, detection_scores, detection_classes

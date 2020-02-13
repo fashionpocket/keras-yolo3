@@ -326,6 +326,7 @@ def ExportSingleImageGroundtruthToCoco(image_id,
     if len(groundtruth_classes.shape) != 1:
         raise ValueError('groundtruth_classes is '
                          'expected to be of rank 1.')
+    print(groundtruth_boxes.shape)
     if len(groundtruth_boxes.shape) != 2:
         raise ValueError('groundtruth_boxes is expected to be of '
                          'rank 2.')
