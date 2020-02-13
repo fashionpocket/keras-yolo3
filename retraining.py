@@ -189,7 +189,7 @@ class Trainer(object):
             out_boxes, out_scores, out_classes = self.sess.run(
                 [self.boxes, self.scores, self.classes],
                 feed_dict={
-                    self.model.input: image_data,
+                    self.model_body.input: image_data,
                     self.input_image_shape: [image.size[1], image.size[0]],
                     K.learning_phase(): 0
                 })
@@ -454,7 +454,7 @@ class Trainer(object):
             out_boxes, out_scores, out_classes = self.sess.run(
                 [self.boxes, self.scores, self.classes],
                 feed_dict={
-                    self.model.input: image_data,
+                    self.model_body.input: image_data,
                     self.input_image_shape: [image_gt.size[1], image_gt.size[0]],
                     K.learning_phase(): 0
                 })
