@@ -218,6 +218,7 @@ class Trainer(object):
         for line in annotation_lines:
             line = line.split()
             image_id = line[0]
+            print(line[1:])
             boxes = np.array([np.array([xmin, ymin, xmax, ymax]) for xmin, ymin, xmax, ymax, _ in line[1:]])
             classes = np.array([class_id for _, _, _, _, class_id in line[1:]])
             image_ids.append(image_id)
@@ -435,7 +436,6 @@ class Trainer(object):
             line = line.split()
             image_gt = Image.open(line[0])
             image_dt = Image.open(line[0])
-            print(line[1:])
             gt_boxes = np.array([np.array([xmin, ymin, xmax, ymax]) for xmin, ymin, xmax, ymax, _ in line[1:]])
             gt_classes = np.array([class_id for _, _, _, _, class_id in line[1:]])
 
