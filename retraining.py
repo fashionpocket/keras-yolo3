@@ -424,7 +424,7 @@ class Trainer(object):
                       'Precision/mAP@.50IOU_train', 'Precision/mAP@.50IOU_valid',
                       'Recall/AR@1_train', 'Recall/AR@1_valid'])
         fig = p.get_figure()
-        fig.savefig(os.path.join(self.log_dir, "/graph.png"))
+        fig.savefig(os.path.join(self.log_dir, "graph.png"))
         plt.close()
 
     def sample_detection(self, epoch):
