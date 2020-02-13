@@ -84,7 +84,7 @@ class Trainer(object):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        self.training_log_file = open(os.path.join(self.log_dir, "progress.csv", "w"))
+        self.training_log_file = open(os.path.join(self.log_dir, "progress.csv"), "w")
 
         self.categories_dict = [{'id': i, 'name': name} for i, name in enumerate(self.class_names)] # for COCO API
 
