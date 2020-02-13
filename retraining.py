@@ -462,7 +462,7 @@ class Trainer(object):
             thickness = (image_gt.size[0] + image_gt.size[1]) // 300
 
             # ground truth result
-            for i, c in reversed(line(enumerate(gt_classes))):
+            for i, c in reversed(list(enumerate(gt_classes))):
                 groundtruth_class = self.class_names[c]
                 box = gt_boxes[i]
                 label = '{}'.format(groundtruth_class)
@@ -490,7 +490,7 @@ class Trainer(object):
                 del draw
 
             # for detection result
-            for i, c in reversed(line(enumerate(out_classes))):
+            for i, c in reversed(list(enumerate(out_classes))):
                 predicted_class = self.class_names[c]
                 box = out_boxes[i]
                 score = out_scores[i]
