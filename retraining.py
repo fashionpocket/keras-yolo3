@@ -373,7 +373,7 @@ class Trainer(object):
         groundtruth = COCOWrapper(groundtruth_list)
         detections = groundtruth.LoadAnnotations(detections_list)
         evaluator = COCOEvalWrapper(groundtruth, detections)
-        summary_metrics_train, per_cat_ap_train = evaluator.ComputeMetrics(include_metrics_per_category=True, all_metrics_per_category=True)
+        summary_metrics_train, per_cat_ap_train = evaluator.ComputeMetrics()
 
         # for validation data
         image_ids_gt, groundtruth_boxes_list, groundtruth_classes_list = self.make_groundtruth_list(self.valid_lines)
@@ -389,7 +389,7 @@ class Trainer(object):
         groundtruth = COCOWrapper(groundtruth_list)
         detections = groundtruth.LoadAnnotations(detections_list)
         evaluator = COCOEvalWrapper(groundtruth, detections)
-        summary_metrics_valid, per_cat_ap_valid = evaluator.ComputeMetrics(include_metrics_per_category=True, all_metrics_per_category=True)
+        summary_metrics_valid, per_cat_ap_valid = evaluator.ComputeMetrics()
 
         # print evaluated metrics to std_out
         print("Evaluation on TRAIN DATA -----")
