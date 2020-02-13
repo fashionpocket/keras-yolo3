@@ -432,7 +432,7 @@ class Trainer(object):
         os.makedirs("%s/sample_images" % self.output_dir, exist_ok=True)
         # r, c = 1, 2
         samples = self.valid_lines[:3]
-        for idx, line in samples:
+        for idx, line in enumerate(samples):
             line = line.split()
             image_gt = Image.open(line[0])
             image_dt = Image.open(line[0])
