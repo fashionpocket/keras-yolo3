@@ -550,6 +550,7 @@ if __name__ == '__main__':
     parser.add_argument('--anchors_path', type=str, default='model_data/yolo_anchors.txt')
     parser.add_argument('-s', '--input_size', type=str, default='416x416', help='HEIGHT x WIDTH')
     parser.add_argument('--pretrained_weights', type=str, default='model_data/yolo_weights.h5', help='path to pretrained yolov3 weights')
+    parser.add_argument('-n', '--gpu_num', type=int, default=1, help='number of GPU')
 
     args = parser.parse_args()
     train_annotation_path = args.train_path
@@ -562,6 +563,7 @@ if __name__ == '__main__':
     height, width = args.input_size.split("x")
     input_shape = (int(height), int(width))
     weights_path = args.pretrained_weights
+    gpu_num = args.gpu_num
 
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
@@ -576,7 +578,8 @@ if __name__ == '__main__':
         output_dir = output_dir,
         classes_path=classes_path,
         anchors_path=anchors_path,
-        input_shape=input_shape
+        input_shape=input_shape,
+        gpu_num=gpu_num
     )
 
     trainer.train(
