@@ -348,6 +348,9 @@ class Trainer(object):
 
         first_valid_result = self.model.evaluate_generator(self.valid_data_generator, max(1, num_valid // batch_size))
         print("Epoch 0 (at the pretrained stage) [validation loss : %.4f]" % first_valid_result)
+        self.evaluate(0)
+        self.sample_detection(0)
+
         print('Train on {} samples, val on {} samples, with batch size {}.'.format(num_train, num_valid, batch_size))
         self.model.fit_generator(self.train_data_generator,
                             steps_per_epoch=max(1, num_train // batch_size),
