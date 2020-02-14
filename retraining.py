@@ -587,7 +587,7 @@ if __name__ == '__main__':
         gpu_num=gpu_num
     )
 
-    trainer.train(
+    trainer.train_automatically(
         weights_path=weights_path,
         batch_size=batch_size
     )
