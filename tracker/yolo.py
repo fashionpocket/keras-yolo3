@@ -40,6 +40,7 @@ class YOLO(object):
         self.__dict__.update(self._defaults) # set up default values
         self.__dict__.update(kwargs) # and update with user overrides
         self.class_names = self._get_class()
+        self.num_classes = len(self.class_names)
         self.anchors = self._get_anchors()
         self.sess = K.get_session()
         self.boxes, self.scores, self.classes = self.generate()
@@ -64,7 +65,7 @@ class YOLO(object):
 
         # Load model, or construct model and load weights.
         num_anchors = len(self.anchors)
-        num_classes = len(self.class_names)
+        num_classes = self.num_classes
         is_tiny_version = num_anchors==6 # default setting
         try:
             self.yolo_model = load_model(model_path, compile=False)
