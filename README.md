@@ -21,7 +21,7 @@ Annotation for **KITTI**, which is used for **self-training** **(proposed method
 # Generate KITTI Annotations. (inference)
 $ python kitti_annotation.py -m inference \ 
                              -i /home/CVPRanno/data/kitti/training/image_02 \ 
-                             -l /home/CVPRanno/data/kitti/training/image_02 \ 
+                             -l /home/CVPRanno/data/kitti/training/label_02 \ 
                              -o kitti_inference_train.txt \ 
                              -s 1584x480
 ```
@@ -35,6 +35,8 @@ $ python retraining.py --train_path annotation/kitti_inference_train.txt \
 ```
 <summary>Original <a href="https://github.com/qqwweee/keras-yolo3"><code>README.md</code></a>
 <details>
+
+
 # keras-yolo3
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 ## Introduction
@@ -107,5 +109,7 @@ If you want to use original pretrained weights for YOLOv3:
 5. Always load pretrained weights and freeze layers in the first stage of training. Or try Darknet training. It's OK if there is a mismatch warning.
 6. The training strategy is for reference only. Adjust it according to your dataset and your goal. And add further strategy if needed.
 7. For speeding up the training process with frozen layers train_bottleneck.py can be used. It will compute the bottleneck features of the frozen model first and then only trains the last layers. This makes training on CPU possible in a reasonable time. See [this](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html) for more information on bottleneck features.
+
+
 </details>
 </summary>
