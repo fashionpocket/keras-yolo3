@@ -295,7 +295,7 @@ class Trainer(object):
             valid_loss = self.model.evaluate_generator(self.valid_data_generator, max(1, num_valid // batch_size))
             print("[Epoch %d] [validation loss: %f]" % (epoch, valid_loss))
             self.evaluate(epoch)
-            self.sample_detection(epoch)
+            #self.sample_detection(epoch)
 
             if not os.path.exists("{}/models".format(self.output_dir)):
                 os.makedirs("{}/models".format(self.output_dir), exist_ok=True)
