@@ -190,8 +190,8 @@ class Trainer(object):
                 [self.boxes, self.scores, self.classes],
                 feed_dict={
                     self.model_body.input: image_data,
-                    self.input_image_shape: [image.size[1], image.size[0]],
-                    K.learning_phase(): 0
+                    self.input_image_shape: [image.size[1], image.size[0]]#,
+                    #K.learning_phase(): 0
                 })
             image_ids.append(image_id)
             detection_scores.append(np.array(out_scores))
@@ -460,8 +460,8 @@ class Trainer(object):
                 [self.boxes, self.scores, self.classes],
                 feed_dict={
                     self.model_body.input: image_data,
-                    self.input_image_shape: [image_gt.size[1], image_gt.size[0]],
-                    K.learning_phase(): 0
+                    self.input_image_shape: [image_gt.size[1], image_gt.size[0]]#,
+                    #K.learning_phase(): 0
                 })
 
             font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
