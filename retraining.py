@@ -281,7 +281,7 @@ class Trainer(object):
         steps_per_epoch = max(1, num_train // batch_size)
         for epoch in range(epochs):
             epoch += 1
-            K.set_learning_phase(1) # for training
+            #K.set_learning_phase(1) # for training
             for batch_i in range(steps_per_epoch):
                 batch_i += 1
                 # train manually
